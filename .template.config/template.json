@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Amangeldi Annaklychev",
+  "classifications": [ "Clean Architecture", ".NET", "Blazor" ],
+  "name": "Clean Architecture Solution Template",
+  "identity": "CleanArchitecture.Template",
+  "shortName": "cleanarchitecture",
+  "sourceName": "CleanArchitecture",
+  "preferNameDirectory": false,
+
+  "sources": [
+    {
+      "source": "content",
+      "target": ""
+    }
+  ]
+}

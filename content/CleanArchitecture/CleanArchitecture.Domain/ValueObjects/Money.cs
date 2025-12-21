@@ -1,0 +1,8 @@
+namespace CleanArchitecture.Domain.ValueObjects;
+
+public sealed record Money(decimal Amount, string Currency)
+{
+    public static Money Zero(string currency) => new(0m, currency);
+
+    public override string ToString() => $"{Amount} {Currency}";
+}
