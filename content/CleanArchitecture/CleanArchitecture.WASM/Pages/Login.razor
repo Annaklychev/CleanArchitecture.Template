@@ -1,18 +1,26 @@
 @page "/Login"
 <h3>Login</h3>
 
-@if (!string.IsNullOrEmpty(Error))
-{
-    <div style="color:red">@Error</div>
-}
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-<div style="max-width: 320px">
-    <input @bind="Username" placeholder="Username" />
-    <br /><br />
-    <input type="password" @bind="Password" placeholder="Password" />
-    <br /><br />
-    <button @onclick="LoginAsync">Sign in</button>
-</div>
+    <div>
+        <label>Email</label>
+        <InputText @bind-Value="loginModel.Email" />
+    </div>
+    <div>
+        <label>Password</label>
+        <InputText @bind-Value="loginModel.Password" type="password" />
+    </div>
+
+    <button type="submit">Login</button>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p style="color:red">@errorMessage</p>
+    }
+</EditForm>
 
 @code {
     

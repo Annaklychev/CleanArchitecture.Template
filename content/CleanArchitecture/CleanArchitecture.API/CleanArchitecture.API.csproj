@@ -14,4 +14,10 @@
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj" />
+      <ProjectReference Include="..\CleanArchitecture.Migrations\CleanArchitecture.Migrations.csproj" />
+      <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
+    </ItemGroup>
+
 </Project>

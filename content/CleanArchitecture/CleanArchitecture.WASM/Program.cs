@@ -15,7 +15,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStatePr
 
 builder.Services.AddScoped<JwtAuthMessageHandler>();
 
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
@@ -24,7 +24,5 @@ builder.Services.AddHttpClient("Api", client =>
         client.BaseAddress = new Uri("https://localhost:7079/");
     })
     .AddHttpMessageHandler<JwtAuthMessageHandler>();
-builder.Services.AddScoped(sp =>
-    sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
 
 await builder.Build().RunAsync();

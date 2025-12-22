@@ -8,10 +8,12 @@
 
     <main>
         <div class="top-row px-4">
-            @if (!string.IsNullOrWhiteSpace(UserName))
-            {
-                <p>@UserName</p>
-            }
+            <AuthorizeView>
+                @if (!string.IsNullOrWhiteSpace(UserName))
+                {
+                    <p>@UserName</p>
+                }
+            </AuthorizeView>
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
 

@@ -1,7 +1,9 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="CleanArchitecture.API/CleanArchitecture.API.csproj" />
+    <Project Path="CleanArchitecture.Application/CleanArchitecture.Application.csproj" />
     <Project Path="CleanArchitecture.Domain/CleanArchitecture.Domain.csproj" />
+    <Project Path="CleanArchitecture.Infrastructure/CleanArchitecture.Infrastructure.csproj" />
     <Project Path="CleanArchitecture.Migrations/CleanArchitecture.Migrations.csproj" />
     <Project Path="CleanArchitecture.Persistence/CleanArchitecture.Persistence.csproj" />
   </Folder>

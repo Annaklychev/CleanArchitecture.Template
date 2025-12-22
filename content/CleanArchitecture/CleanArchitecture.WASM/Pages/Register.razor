@@ -1,0 +1,30 @@
+@page "/Register"
+<h3>Register</h3>
+
+<EditForm Model="registerModel" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Email</label>
+        <InputText @bind-Value="registerModel.Email" />
+    </div>
+    <div>
+        <label>Password</label>
+        <InputText @bind-Value="registerModel.Password" type="password" />
+    </div>
+    <div>
+        <label>Confirm Password</label>
+        <InputText @bind-Value="registerModel.ConfirmPassword" type="password" />
+    </div>
+
+    <button type="submit">Register</button>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p style="color:red">@errorMessage</p>
+    }
+</EditForm>
+@code {
+    
+}

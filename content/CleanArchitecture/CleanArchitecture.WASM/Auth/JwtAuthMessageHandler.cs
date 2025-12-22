@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using Blazored.LocalStorage;
 
@@ -6,23 +7,39 @@ namespace CleanArchitecture.WASM.Auth;
 
 public class JwtAuthMessageHandler : DelegatingHandler
 {
-    private readonly ILocalStorageService _localStorage;
+    private readonly IAuthService _authService;
 
-    public JwtAuthMessageHandler(ILocalStorageService localStorage)
+    public JwtAuthMessageHandler(IAuthService authService)
     {
-        _localStorage = localStorage;
+        _authService = authService;
     }
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var token = await _localStorage.GetItemAsync<string>("access_token");
+        var token = await _authService.GetAccessTokenAsync();
+        if (!string.IsNullOrEmpty(token))
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        if (!string.IsNullOrWhiteSpace(token))
+        var response = await base.SendAsync(request, cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
-            request.Headers.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+            // try refresh
+            var success = await _authService.TryRefreshTokenAsync();
+            if (success)
+            {
+                token = await _authService.GetAccessTokenAsync();
+                // repeat the request with a new token
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                response = await base.SendAsync(request, cancellationToken);
+            }
+            else
+            {
+                // the token has not been updated → logout
+                await _authService.LogoutAsync();
+            }
         }
 
-        return await base.SendAsync(request, cancellationToken);
+        return response;
     }
 }

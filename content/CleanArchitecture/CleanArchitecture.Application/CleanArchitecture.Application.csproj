@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Abstractions\Caching\" />
+      <Folder Include="Abstractions\Messaging\" />
+      <Folder Include="Common\" />
+      <Folder Include="DTOs\" />
+      <Folder Include="Mapping\" />
+      <Folder Include="UseCases\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,3 +1,4 @@
+using CleanArchitecture.Domain.Entities.Auth;
 using CleanArchitecture.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -13,18 +14,31 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         IdentityRoleClaim<Guid>,
         IdentityUserToken<Guid>>(options)
 {
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<ApplicationUser>().ToTable("Users");
-        builder.Entity<ApplicationRole>().ToTable("Roles");
+        builder.Entity<ApplicationUser>().ToTable("AspNetUsers");
+        builder.Entity<ApplicationRole>().ToTable("AspNetRoles");
 
-        builder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles");
-        builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
-        builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
-        builder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
-        builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
+        builder.Entity<IdentityUserRole<Guid>>().ToTable("AspNetUserRoles");
+        builder.Entity<IdentityUserClaim<Guid>>().ToTable("AspNetUserClaims");
+        builder.Entity<IdentityUserLogin<Guid>>().ToTable("AspNetUserLogins");
+        builder.Entity<IdentityRoleClaim<Guid>>().ToTable("AspNetRoleClaims");
+        builder.Entity<IdentityUserToken<Guid>>().ToTable("AspNetUserTokens");
+        builder.Entity<RefreshToken>(e =>
+        {
+            e.ToTable("RefreshTokens");
+            e.HasKey(x => x.Id);
+
+            e.Property(x => x.Token).IsRequired();
+            e.Property(x => x.ExpiresAt).IsRequired();
+
+            e.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UserId);
+        });
 
         builder.Entity<ApplicationUser>(entity =>
         {

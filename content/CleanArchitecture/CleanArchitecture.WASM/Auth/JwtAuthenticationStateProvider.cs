@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Blazored.LocalStorage;
+using CleanArchitecture.Application.Abstractions.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace CleanArchitecture.WASM.Auth;
@@ -50,9 +51,10 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
         return new AuthenticationState(user);
     }
 
-    public async Task MarkUserAsAuthenticated(LoginResponse response)
+    public async Task MarkUserAsAuthenticated(AuthResult response)
     {
-        await _localStorage.SetItemAsync("access_token", response.Token);
+        await _localStorage.SetItemAsync("access_token", response.AccessToken);
+        await _localStorage.SetItemAsync("refresh_token", response.RefreshToken);
         await _localStorage.SetItemAsync("userName", response.UserName);
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
@@ -60,8 +62,12 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
     public async Task MarkUserAsLoggedOut()
     {
         await _localStorage.RemoveItemAsync("access_token");
+        await _localStorage.RemoveItemAsync("refresh_token");
         await _localStorage.RemoveItemAsync("userName");
         NotifyAuthenticationStateChanged(
             Task.FromResult(new AuthenticationState(_anonymous)));
     }
+
+    public async Task<string?> GetAccessTokenAsync()
+        => await _localStorage.GetItemAsync<string?>("access_token");
 }
