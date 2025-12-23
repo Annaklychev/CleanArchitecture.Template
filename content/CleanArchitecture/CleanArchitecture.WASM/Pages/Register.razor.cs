@@ -1,13 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using Blazored.LocalStorage;
+using CleanArchitecture.Application.Interfaces.Contracts.Auth;
 using CleanArchitecture.WASM.Auth;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace CleanArchitecture.WASM.Pages;
 
 public partial class Register : ComponentBase
 {
-    [Inject] public IAuthService AuthService { get; set; }
+    [Inject] public IAuthApi AuthService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
+    [Inject] public ILocalStorageService LocalStorageService { get; set; }
+    [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     private RegisterModel registerModel = new();
     private string? errorMessage;
 
@@ -21,14 +26,17 @@ public partial class Register : ComponentBase
             return;
         }
 
-        var success = await AuthService.RegisterAsync(registerModel.Email, registerModel.Password);
-        if (success)
+        try
         {
-            NavigationManager.NavigateTo("/", true);
+            var result = await AuthService.Register(new(registerModel.Email, registerModel.Password));
+            
+            await ((JwtAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(result);
         }
-        else
+        catch (Exception e)
         {
-            errorMessage = "Registration failed";
+            Console.WriteLine(e);
+            errorMessage = "Registration failed: " + e.Message;
+            throw;
         }
     }
 

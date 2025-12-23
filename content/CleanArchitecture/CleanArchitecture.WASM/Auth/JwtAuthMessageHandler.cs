@@ -7,39 +7,23 @@ namespace CleanArchitecture.WASM.Auth;
 
 public class JwtAuthMessageHandler : DelegatingHandler
 {
-    private readonly IAuthService _authService;
+    private readonly ILocalStorageService _storage;
 
-    public JwtAuthMessageHandler(IAuthService authService)
+    public JwtAuthMessageHandler(ILocalStorageService storage)
     {
-        _authService = authService;
+        _storage = storage;
     }
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var token = await _authService.GetAccessTokenAsync();
-        if (!string.IsNullOrEmpty(token))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var token = await _storage.GetItemAsync<string>("access_token");
 
-        var response = await base.SendAsync(request, cancellationToken);
-
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        if (!string.IsNullOrWhiteSpace(token))
         {
-            // try refresh
-            var success = await _authService.TryRefreshTokenAsync();
-            if (success)
-            {
-                token = await _authService.GetAccessTokenAsync();
-                // repeat the request with a new token
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                response = await base.SendAsync(request, cancellationToken);
-            }
-            else
-            {
-                // the token has not been updated → logout
-                await _authService.LogoutAsync();
-            }
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
         }
 
-        return response;
+        return await base.SendAsync(request, cancellationToken);
     }
 }

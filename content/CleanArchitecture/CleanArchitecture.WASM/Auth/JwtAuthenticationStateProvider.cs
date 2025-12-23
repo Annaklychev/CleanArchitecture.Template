@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Blazored.LocalStorage;
-using CleanArchitecture.Application.Abstractions.Auth;
+using CleanArchitecture.Application.DTOs;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace CleanArchitecture.WASM.Auth;
@@ -51,7 +51,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
         return new AuthenticationState(user);
     }
 
-    public async Task MarkUserAsAuthenticated(AuthResult response)
+    public async Task MarkUserAsAuthenticated(AuthResultDto response)
     {
         await _localStorage.SetItemAsync("access_token", response.AccessToken);
         await _localStorage.SetItemAsync("refresh_token", response.RefreshToken);

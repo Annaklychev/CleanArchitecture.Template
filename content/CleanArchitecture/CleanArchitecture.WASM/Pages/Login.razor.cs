@@ -1,13 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using Blazored.LocalStorage;
+using CleanArchitecture.Application.Interfaces.Contracts.Auth;
 using CleanArchitecture.WASM.Auth;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace CleanArchitecture.WASM.Pages;
 
 public partial class Login : ComponentBase
 {
-    [Inject] public IAuthService AuthService { get; set; }
+    [Inject] public IAuthApi AuthService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
+    [Inject] public ILocalStorageService LocalStorageService { get; set; }
+    [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     private LoginModel loginModel = new();
     private string? errorMessage;
 
@@ -16,8 +21,8 @@ public partial class Login : ComponentBase
         try
         {
             errorMessage = null;
-            await AuthService.LoginAsync(loginModel.Email, loginModel.Password);
-        
+            var result = await AuthService.Login(new(loginModel.Email, loginModel.Password));
+            await ((JwtAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated(result);
             NavigationManager.NavigateTo("/", true);
         }
         catch (Exception e)
