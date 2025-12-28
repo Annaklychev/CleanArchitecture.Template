@@ -1,5 +1,6 @@
 using System.Text;
 using CleanArchitecture.Application.Interfaces.Auth;
+using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Auth;
 using CleanArchitecture.Migrations;
 using CleanArchitecture.Persistence;
@@ -24,7 +25,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    builder.Services.AddPersistence(builder.Configuration);
+    builder.Services.AddInfrastructure(builder.Configuration);
 
     builder.Services.AddTransient<IJwtTokenService, JwtTokenService>();
     builder.Services.Configure<JwtSettings>(
