@@ -1,4 +1,4 @@
-namespace CleanArchitecture.Domain.Enums;
+namespace CleanArchitecture.Domain.Payment.Enums;
 
 public enum PaymentMethod
 {

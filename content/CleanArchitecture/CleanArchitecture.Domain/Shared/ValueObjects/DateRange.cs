@@ -1,4 +1,4 @@
-namespace CleanArchitecture.Domain.ValueObjects;
+namespace CleanArchitecture.Domain.Shared.ValueObjects;
 
 public sealed record DateRange
 {

@@ -10,7 +10,7 @@ using NLog.Web;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromFile("nlog.config").GetCurrentClassLogger();
-logger.Debug("init main");
+logger.Info("init main");
 
 try
 {
