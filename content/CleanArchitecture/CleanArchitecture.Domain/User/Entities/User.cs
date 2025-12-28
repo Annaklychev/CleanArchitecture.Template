@@ -1,6 +1,6 @@
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Shared.ValueObjects;
 using CleanArchitecture.Domain.User.ValueObjects;
-using CleanArchitecture.Domain.ValueObjects;
 
 namespace CleanArchitecture.Domain.User.Entities;
 
