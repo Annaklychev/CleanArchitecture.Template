@@ -1,6 +1,6 @@
 using System.Net.Mail;
 
-namespace CleanArchitecture.Domain.ValueObjects;
+namespace CleanArchitecture.Domain.User.ValueObjects;
 
 public sealed record Email
 {

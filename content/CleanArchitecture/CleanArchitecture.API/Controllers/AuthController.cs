@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using CleanArchitecture.Application.Abstractions.Auth;
+using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Interfaces.Auth;
 using CleanArchitecture.Persistence.Context;
 using CleanArchitecture.Persistence.Identity;
@@ -24,17 +24,20 @@ public class AuthController : Controller
     private readonly ApplicationDbContext _db;
     private readonly IJwtTokenService _jwt;
     private readonly IConfiguration _config;
+    private readonly ILogger<AuthController> _logger;
 
     public AuthController(
         UserManager<ApplicationUser> userManager,
         ApplicationDbContext db,
         IJwtTokenService jwt,
-        IConfiguration config)
+        IConfiguration config,
+        ILogger<AuthController> logger)
     {
         _userManager = userManager;
         _db = db;
         _jwt = jwt;
         _config = config;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -51,7 +54,7 @@ public class AuthController : Controller
         _db.RefreshTokens.Add(refresh);
         await _db.SaveChangesAsync();
 
-        return Ok(new AuthResult(
+        return Ok(new AuthResultDto(
             access,
             refresh.Token,
             request.Email,
@@ -59,7 +62,7 @@ public class AuthController : Controller
     }
 
     [HttpPost("refresh")]
-    public async Task<AuthResult> Refresh(RefreshRequest request)
+    public async Task<AuthResultDto> Refresh(RefreshRequest request)
     {
         var token = await _db.RefreshTokens
             .FirstOrDefaultAsync(x => x.Token == request.RefreshToken);
@@ -77,7 +80,7 @@ public class AuthController : Controller
 
         var user = await _userManager.FindByIdAsync(token.UserId.ToString())!;
 
-        return new AuthResult(
+        return new AuthResultDto(
             _jwt.GenerateAccessToken(user),
             newRefresh.Token,
             user.Email,
@@ -100,12 +103,13 @@ public class AuthController : Controller
         _db.RefreshTokens.Add(refresh);
         await _db.SaveChangesAsync();
 
-        return Ok(new AuthResult(access, refresh.Token,request.Email, DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:AccessMinutes"]))));
+        return Ok(new AuthResultDto(access, refresh.Token,request.Email, DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:AccessMinutes"]))));
     }
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("test")]
     public IActionResult Test()
     {
+        _logger.LogInformation("Protected method called");
         return Ok("You are authorized ✅");
     }
 }

@@ -1,4 +1,4 @@
-using CleanArchitecture.Domain.Entities.Auth;
+using CleanArchitecture.Domain.Auth.Entities;
 using CleanArchitecture.Persistence.Identity;
 
 namespace CleanArchitecture.Application.Interfaces.Auth;

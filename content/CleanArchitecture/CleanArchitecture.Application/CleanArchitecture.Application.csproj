@@ -10,13 +10,17 @@
       <Folder Include="Abstractions\Caching\" />
       <Folder Include="Abstractions\Messaging\" />
       <Folder Include="Common\" />
-      <Folder Include="DTOs\" />
       <Folder Include="Mapping\" />
       <Folder Include="UseCases\" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Refit" Version="9.0.2" />
+      <PackageReference Include="Refit.HttpClientFactory" Version="9.0.2" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,8 @@
+using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.User.ValueObjects;
 using CleanArchitecture.Domain.ValueObjects;
 
-namespace CleanArchitecture.Domain.Entities.User;
+namespace CleanArchitecture.Domain.User.Entities;
 
 public class User : BaseEntity
 {
