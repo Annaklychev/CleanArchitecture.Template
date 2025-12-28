@@ -1,4 +1,6 @@
-namespace CleanArchitecture.Domain.Entities.Auth;
+using CleanArchitecture.Domain.Entities;
+
+namespace CleanArchitecture.Domain.Auth.Entities;
 
 public class RefreshToken : BaseEntity
 {

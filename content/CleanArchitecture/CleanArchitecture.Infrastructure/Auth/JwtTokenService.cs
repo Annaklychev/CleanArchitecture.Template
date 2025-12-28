@@ -2,13 +2,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using CleanArchitecture.Application.Interfaces.Auth;
-using CleanArchitecture.Domain.Entities.Auth;
 using CleanArchitecture.Persistence.Identity;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using CleanArchitecture.Domain.Auth.Entities;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Infrastructure.Auth;

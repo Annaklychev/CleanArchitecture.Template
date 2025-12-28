@@ -24,17 +24,20 @@ public class AuthController : Controller
     private readonly ApplicationDbContext _db;
     private readonly IJwtTokenService _jwt;
     private readonly IConfiguration _config;
+    private readonly ILogger<AuthController> _logger;
 
     public AuthController(
         UserManager<ApplicationUser> userManager,
         ApplicationDbContext db,
         IJwtTokenService jwt,
-        IConfiguration config)
+        IConfiguration config,
+        ILogger<AuthController> logger)
     {
         _userManager = userManager;
         _db = db;
         _jwt = jwt;
         _config = config;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -106,6 +109,7 @@ public class AuthController : Controller
     [HttpGet("test")]
     public IActionResult Test()
     {
+        _logger.LogInformation("Protected method called");
         return Ok("You are authorized ✅");
     }
 }
