@@ -8,6 +8,13 @@
     <Project Path="CleanArchitecture.Migrations/CleanArchitecture.Migrations.csproj" />
     <Project Path="CleanArchitecture.Persistence/CleanArchitecture.Persistence.csproj" />
   </Folder>
+  <Folder Name="/src/Tests/">
+    <Project Path="CleanArchitecture.Application.Tests/CleanArchitecture.Application.Tests.csproj" />
+    <Project Path="CleanArchitecture.Architecture.Tests/CleanArchitecture.Architecture.Tests.csproj" />
+    <Project Path="CleanArchitecture.Domain.Tests/CleanArchitecture.Domain.Tests.csproj" />
+    <Project Path="CleanArchitecture.Infrastructure.Tests/CleanArchitecture.Infrastructure.Tests.csproj" />
+    <Project Path="CleanArchitecture.WASM.Tests/CleanArchitecture.WASM.Tests.csproj" />
+  </Folder>
   <Folder Name="/src/Web/">
     <Project Path="CleanArchitecture.WASM/CleanArchitecture.WASM.csproj" />
   </Folder>

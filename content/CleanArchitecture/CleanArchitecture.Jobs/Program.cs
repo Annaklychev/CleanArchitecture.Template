@@ -1,5 +1,4 @@
 using CleanArchitecture.Application;
-using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Jobs.Quartz;
 using NLog;
 using NLog.Extensions.Logging;
@@ -13,7 +12,6 @@ try
     builder.ConfigureServices((ctx, services) =>
     {
         services.AddApplication();
-        services.AddInfrastructure(ctx.Configuration);
         services.AddQuartzJobs(ctx.Configuration);
     });
 

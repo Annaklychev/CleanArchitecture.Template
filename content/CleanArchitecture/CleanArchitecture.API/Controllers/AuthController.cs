@@ -3,15 +3,11 @@ using System.Security.Claims;
 using System.Text;
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Interfaces.Auth;
-using CleanArchitecture.Persistence.Context;
-using CleanArchitecture.Persistence.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.API.Controllers;
 
@@ -20,21 +16,24 @@ namespace CleanArchitecture.API.Controllers;
 [Route("api/auth")]
 public class AuthController : Controller
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ApplicationDbContext _db;
+    private readonly ILoginUseCase _loginUseCase;
+    private readonly IUserRegistrationUseCase _userRegistrationUseCase;
+    private readonly IRefreshTokenService _refreshTokenService;
     private readonly IJwtTokenService _jwt;
     private readonly IConfiguration _config;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
-        UserManager<ApplicationUser> userManager,
-        ApplicationDbContext db,
+        ILoginUseCase loginUseCase,
+        IUserRegistrationUseCase userRegistrationUseCase,
+        IRefreshTokenService refreshTokenService,
         IJwtTokenService jwt,
         IConfiguration config,
         ILogger<AuthController> logger)
     {
-        _userManager = userManager;
-        _db = db;
+        _loginUseCase = loginUseCase;
+        _userRegistrationUseCase = userRegistrationUseCase;
+        _refreshTokenService = refreshTokenService;
         _jwt = jwt;
         _config = config;
         _logger = logger;
@@ -43,67 +42,23 @@ public class AuthController : Controller
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
-            throw new UnauthorizedAccessException();
-
-        var access = _jwt.GenerateAccessToken(user);
-        var refresh = _jwt.GenerateRefreshToken(user.Id);
-
-        _db.RefreshTokens.Add(refresh);
-        await _db.SaveChangesAsync();
-
-        return Ok(new AuthResultDto(
-            access,
-            refresh.Token,
-            request.Email,
-            DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:AccessMinutes"]))));
+        var result = await _loginUseCase.ExecuteAsync(request.Email, request.Password);
+        return Ok(result);
     }
 
     [HttpPost("refresh")]
-    public async Task<AuthResultDto> Refresh(RefreshRequest request)
+    public async Task<AuthResultDto> Refresh(RefreshRequestDto request)
     {
-        var token = await _db.RefreshTokens
-            .FirstOrDefaultAsync(x => x.Token == request.RefreshToken);
-
-        if (token == null || !token.IsActive)
-            throw new UnauthorizedAccessException();
-
-        token.RevokedAt = DateTime.UtcNow;
-
-        var newRefresh = _jwt.GenerateRefreshToken(token.UserId);
-        token.ReplacedByToken = newRefresh.Token;
-
-        _db.RefreshTokens.Add(newRefresh);
-        await _db.SaveChangesAsync();
-
-        var user = await _userManager.FindByIdAsync(token.UserId.ToString())!;
-
-        return new AuthResultDto(
-            _jwt.GenerateAccessToken(user),
-            newRefresh.Token,
-            user.Email,
-            DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:AccessMinutes"])));
+        return await _refreshTokenService.Refresh(request);
     }
     
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var user = new ApplicationUser { Email = request.Email, UserName = request.Email };
-        var result = await _userManager.CreateAsync(user, request.Password);
-    
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
+        await _userRegistrationUseCase.RegisterAsync(request.Email, request.Password);
+        var result = await _loginUseCase.ExecuteAsync(request.Email, request.Password);
 
-        // Можно сразу выдать токены
-        var access = _jwt.GenerateAccessToken(user);
-        var refresh = _jwt.GenerateRefreshToken(user.Id);
-
-        _db.RefreshTokens.Add(refresh);
-        await _db.SaveChangesAsync();
-
-        return Ok(new AuthResultDto(access, refresh.Token,request.Email, DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:AccessMinutes"]))));
+        return Ok(result);
     }
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("test")]

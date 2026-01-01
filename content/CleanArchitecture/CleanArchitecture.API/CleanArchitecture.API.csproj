@@ -18,9 +18,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CleanArchitecture.Application\CleanArchitecture.Application.csproj" />
       <ProjectReference Include="..\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj" />
       <ProjectReference Include="..\CleanArchitecture.Migrations\CleanArchitecture.Migrations.csproj" />
-      <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
     </ItemGroup>
 
 </Project>
