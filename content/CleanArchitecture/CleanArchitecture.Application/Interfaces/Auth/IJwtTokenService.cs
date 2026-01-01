@@ -1,10 +1,10 @@
+using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Domain.Auth.Entities;
-using CleanArchitecture.Persistence.Identity;
 
 namespace CleanArchitecture.Application.Interfaces.Auth;
 
 public interface IJwtTokenService
 {
-    string GenerateAccessToken(ApplicationUser user);
+    string GenerateAccessToken(JwtUserDto user);
     RefreshToken GenerateRefreshToken(Guid userId);
 }

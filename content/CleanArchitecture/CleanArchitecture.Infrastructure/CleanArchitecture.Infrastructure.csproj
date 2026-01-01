@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\CleanArchitecture.Application\CleanArchitecture.Application.csproj" />
+      <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>
