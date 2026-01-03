@@ -92,7 +92,7 @@ try
 catch (Exception ex)
 {
     logger.Error(ex, "Stopped program because of exception");
-    throw;
+    throw; 
 }
 finally
 {
