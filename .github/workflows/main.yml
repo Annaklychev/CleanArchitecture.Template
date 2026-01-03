@@ -25,7 +25,7 @@ jobs:
         run: dotnet restore
 
       - name: Run unit tests (build + test)
-        run: dotnet test --filter "TestCategory!=Playwright"
+        run: dotnet test --filter "Category!=Playwright"
 
   # playwright-tests:
   #   name: Playwright Tests
