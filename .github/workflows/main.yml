@@ -25,7 +25,10 @@ jobs:
         run: dotnet restore
 
       - name: Run unit tests (build + test)
-        run: dotnet test --filter "Category!=Playwright"
+        run: |
+    for proj in content/CleanArchitecture/**/*.Tests.csproj; do
+      dotnet test "$proj" --filter "Category!=Playwright"
+    done
 
   # playwright-tests:
   #   name: Playwright Tests
