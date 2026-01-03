@@ -3,6 +3,7 @@ using FluentAssertions;
 
 namespace CleanArchitecture.WASM.Tests.Pages;
 
+[Trait("Category", "Playwright")]
 public class SecretPageTests
 {
     private const string BaseUrl = "https://localhost:7175";
