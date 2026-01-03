@@ -39,40 +39,32 @@ jobs:
                 dotnet build $proj.FullName --no-restore
             }
 
-      - name: Build all projects
-        run: dotnet build --no-restore
-
       - name: Run all unit tests
         shell: pwsh
         run: |
           $projects = Get-ChildItem -Path content/CleanArchitecture -Recurse -Filter "*.Tests.csproj"
 
           foreach ($proj in $projects) {
-              Write-Host "Running tests for $($proj.FullName)"
-
               $resultsDir = "TestResults/$($proj.BaseName)"
-              # Создаём папку заранее
               New-Item -ItemType Directory -Force -Path $resultsDir | Out-Null
 
-              # Массив аргументов для надежного вызова dotnet test
-              $dotnetArgs = @(
-                  $proj.FullName
-                  "--no-restore"
-                  "--logger", "trx;LogFileName=TestResults.trx"
-                  "--results-directory", $resultsDir
-                  "--filter", "Category!=Playwright"
-              )
+              Write-Host "Running tests $($proj.FullName)"
+              $process = Start-Process dotnet -ArgumentList @(
+                  "test", $proj.FullName,
+                  "--logger", "trx;LogFileName=TestResults.trx",
+                  "--results-directory", $resultsDir,
+                  "--filter", "Category!=Playwright",
+                  "--no-restore",
+                  "--no-build"
+              ) -PassThru -Wait
 
-              # Запуск тестов
-              dotnet test @dotnetArgs
-
-              # Проверяем, создался ли файл TRX
-              $trxFile = Join-Path $resultsDir "TestResults.trx"
-              if (-not (Test-Path $trxFile)) {
-                  Write-Host "Warning: No TRX file found for $($proj.BaseName), skipping."
-              } else {
-                  Write-Host "TRX created: $trxFile"
+              # Проверяем код выхода
+              if ($process.ExitCode -ne 0) {
+                  Write-Host "Tests failed for $($proj.BaseName) with exit code $($process.ExitCode)"
+                  exit $process.ExitCode
               }
+
+              Write-Host "TRX created: $resultsDir/TestResults.trx"
           }
 
       - name: Upload dotnet test results
