@@ -26,7 +26,9 @@ jobs:
 
       - name: Run unit tests (build + test)
         run: |
+    echo "Starting test loop"
     for proj in content/CleanArchitecture/**/*.Tests.csproj; do
+      echo "Running tests for: $proj"
       dotnet test "$proj" --filter "Category!=Playwright"
     done
 
