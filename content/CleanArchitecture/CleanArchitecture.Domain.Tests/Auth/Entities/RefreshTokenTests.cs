@@ -1,7 +1,7 @@
 using CleanArchitecture.Domain.Auth.Entities;
 
 namespace CleanArchitecture.Domain.Tests.Auth.Entities;
-
+//
 public class RefreshTokenTests
 {
     [Fact]
