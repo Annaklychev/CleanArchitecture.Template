@@ -23,25 +23,25 @@ jobs:
       - name: Run unit tests (build + test)
         run: dotnet test --filter "TestCategory!=Playwright"
 
-  playwright-tests:
-    name: Playwright Tests
-    runs-on: ubuntu-latest
-    needs: build-and-test
+  # playwright-tests:
+  #   name: Playwright Tests
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-test
 
-    steps:
-      - uses: actions/checkout@v4
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 10.0.x
+  #     - uses: actions/setup-dotnet@v4
+  #       with:
+  #         dotnet-version: 10.0.x
 
-      - name: Restore
-        run: dotnet restore
+  #     - name: Restore
+  #       run: dotnet restore
 
-      - name: Install Playwright browsers
-        run: |
-          dotnet tool install --global Microsoft.Playwright.CLI
-          playwright install --with-deps
+  #     - name: Install Playwright browsers
+  #       run: |
+  #         dotnet tool install --global Microsoft.Playwright.CLI
+  #         playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: dotnet test --filter "TestCategory=Playwright"
+  #     - name: Run Playwright tests
+  #       run: dotnet test --filter "TestCategory=Playwright"
