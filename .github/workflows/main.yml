@@ -23,6 +23,15 @@ jobs:
 
       - name: Restore
         run: dotnet restore
+        
+      - name: Build test projects only
+          shell: pwsh
+          run: |
+            $projects = Get-ChildItem -Path content/CleanArchitecture -Recurse -Filter "*.Tests.csproj"
+            foreach ($proj in $projects) {
+               Write-Host "Building test project $($proj.FullName)"
+                dotnet build $proj.FullName --no-restore
+            }
 
       - name: Run all unit tests
         shell: pwsh
