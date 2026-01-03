@@ -25,7 +25,23 @@ jobs:
         run: dotnet restore
 
       - name: Run unit tests (build + test)
-        run: dotnet test --no-restore --logger "trx;LogFileName=TestResults.trx" --results-directory "TestResults-${{ matrix.dotnet-version }}"
+        run: |
+         $projects = Get-ChildItem -Path content/CleanArchitecture -Recurse -Filter "*.Tests.csproj"
+
+         foreach ($proj in $projects) {
+           Write-Host "Running tests for $($proj.FullName)"
+
+           dotnet test $proj.FullName `
+             --no-restore `
+             --no-build `
+             --logger "trx;LogFileName=TestResults.trx" `
+             --results-directory "TestResults\$($proj.BaseName)"
+
+           # Проверяем, что файл действительно создан
+           if (-not (Test-Path "TestResults\$($proj.BaseName)/TestResults.trx")) {
+             Write-Host "Warning: No TRX file found for $($proj.BaseName)"
+           }
+         }
 
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v4
