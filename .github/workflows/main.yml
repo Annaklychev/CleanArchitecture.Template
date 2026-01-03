@@ -24,26 +24,40 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-      - name: Run unit tests (build + test)
+      - name: Build all projects
+        run: dotnet build --no-restore
+
+      - name: Run all unit tests
         shell: pwsh
         run: |
           $projects = Get-ChildItem -Path content/CleanArchitecture -Recurse -Filter "*.Tests.csproj"
 
           foreach ($proj in $projects) {
-            Write-Host "Running tests for $($proj.FullName)"
+              Write-Host "Running tests for $($proj.FullName)"
 
-            dotnet test $proj.FullName `
-              --no-restore `
-              --logger "trx;LogFileName=TestResults.trx" `
-              --results-directory "TestResults/$($proj.BaseName)" `
-              --filter "Category!=Playwright"
+              $resultsDir = "TestResults/$($proj.BaseName)"
+              # Создаём папку заранее
+              New-Item -ItemType Directory -Force -Path $resultsDir | Out-Null
 
-            $trxPath = "TestResults/$($proj.BaseName)/TestResults.trx"
-            if (-not (Test-Path $trxPath)) {
-              Write-Host "Warning: No TRX file found for $($proj.BaseName)"
-              # Для дебага выводим содержимое папки
-              Get-ChildItem -Path "TestResults/$($proj.BaseName)" -Recurse | ForEach-Object { Write-Host $_.FullName }
-            }
+              # Массив аргументов для надежного вызова dotnet test
+              $dotnetArgs = @(
+                  $proj.FullName
+                  "--no-restore"
+                  "--logger", "trx;LogFileName=TestResults.trx"
+                  "--results-directory", $resultsDir
+                  "--filter", "Category!=Playwright"
+              )
+
+              # Запуск тестов
+              dotnet test @dotnetArgs
+
+              # Проверяем, создался ли файл TRX
+              $trxFile = Join-Path $resultsDir "TestResults.trx"
+              if (-not (Test-Path $trxFile)) {
+                  Write-Host "Warning: No TRX file found for $($proj.BaseName), skipping."
+              } else {
+                  Write-Host "TRX created: $trxFile"
+              }
           }
 
       - name: Upload dotnet test results
