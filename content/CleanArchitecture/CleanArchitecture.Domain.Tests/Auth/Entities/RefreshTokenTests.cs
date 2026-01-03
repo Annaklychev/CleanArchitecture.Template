@@ -20,6 +20,7 @@ public class RefreshTokenTests
         //Assert.True(result);
         Assert.True(false);
         Assert.True(false);
+        Assert.True(false);
     }
 
     [Fact]
