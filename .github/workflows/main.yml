@@ -25,6 +25,7 @@ jobs:
         run: dotnet restore
 
       - name: Run unit tests (build + test)
+        shell: pwsh
         run: |
          $projects = Get-ChildItem -Path content/CleanArchitecture -Recurse -Filter "*.Tests.csproj"
 
