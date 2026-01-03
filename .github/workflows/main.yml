@@ -25,7 +25,7 @@ jobs:
         run: dotnet restore
 
       - name: Run unit tests (build + test)
-        run: |
+        run:  |
          $projects = Get-ChildItem -Path content/CleanArchitecture -Recurse -Filter "*.Tests.csproj"
 
          foreach ($proj in $projects) {
