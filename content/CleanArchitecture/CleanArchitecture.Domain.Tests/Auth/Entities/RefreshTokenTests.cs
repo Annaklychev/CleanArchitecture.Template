@@ -17,7 +17,8 @@ public class RefreshTokenTests
         var result = token.IsExpired;
 
         // Assert
-        Assert.True(result);
+        //Assert.True(result);
+        Assert.True(false);
     }
 
     [Fact]
