@@ -32,18 +32,17 @@ jobs:
           foreach ($proj in $projects) {
             Write-Host "Running tests for $($proj.FullName)"
 
-            $dotnetArgs = @(
-              $proj.FullName
-              "--no-restore"
-              "--logger", "trx;LogFileName=TestResults.trx"
-              "--results-directory", "TestResults/$($proj.BaseName)"
-              "--filter", "Category!=Playwright"
-            )
+            dotnet test $proj.FullName `
+              --no-restore `
+              --logger "trx;LogFileName=TestResults.trx" `
+              --results-directory "TestResults/$($proj.BaseName)" `
+              --filter "Category!=Playwright"
 
-            dotnet test @dotnetArgs
-
-            if (-not (Test-Path "TestResults/$($proj.BaseName)/TestResults.trx")) {
+            $trxPath = "TestResults/$($proj.BaseName)/TestResults.trx"
+            if (-not (Test-Path $trxPath)) {
               Write-Host "Warning: No TRX file found for $($proj.BaseName)"
+              # Для дебага выводим содержимое папки
+              Get-ChildItem -Path "TestResults/$($proj.BaseName)" -Recurse | ForEach-Object { Write-Host $_.FullName }
             }
           }
 
