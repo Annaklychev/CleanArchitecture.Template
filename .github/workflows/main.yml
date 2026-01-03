@@ -32,24 +32,27 @@ jobs:
           foreach ($proj in $projects) {
             Write-Host "Running tests for $($proj.FullName)"
 
-            dotnet test $proj.FullName `
-              --no-restore `
-              # убираем --no-build, чтобы гарантированно собрать проект
-              --logger 'trx;LogFileName=TestResults.trx' `
-              --results-directory "TestResults/$($proj.BaseName)" `
-              --filter "Category!=Playwright"
+            $dotnetArgs = @(
+              $proj.FullName
+              "--no-restore"
+              "--logger", "trx;LogFileName=TestResults.trx"
+              "--results-directory", "TestResults/$($proj.BaseName)"
+              "--filter", "Category!=Playwright"
+            )
+
+            dotnet test @dotnetArgs
 
             if (-not (Test-Path "TestResults/$($proj.BaseName)/TestResults.trx")) {
               Write-Host "Warning: No TRX file found for $($proj.BaseName)"
             }
           }
 
-      - name: Upload dotnet test results
-        uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: dotnet-results
-          path: TestResults
+            - name: Upload dotnet test results
+              uses: actions/upload-artifact@v4
+              if: ${{ always() }}
+              with:
+                name: dotnet-results
+                path: TestResults
 
   # playwright-tests:
   #   name: Playwright Tests
