@@ -11,7 +11,7 @@ try
 
     builder.ConfigureServices((ctx, services) =>
     {
-        services.AddApplication();
+        //services.AddApplication();
         services.AddQuartzJobs(ctx.Configuration);
     });
 

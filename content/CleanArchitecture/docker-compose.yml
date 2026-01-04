@@ -1,0 +1,20 @@
+services:
+
+  cleanarchitecture:
+    image: postgres:17-alpine
+
+  cleanarchitecture.api:
+    image: ${DOCKER_REGISTRY-}cleanarchitectureapi
+    build:
+      context: .
+      dockerfile: CleanArchitecture.API/Dockerfile
+
+  cleanarchitecture.jobs:
+    image: ${DOCKER_REGISTRY-}cleanarchitecturejobs
+    build:
+      context: .
+      dockerfile: CleanArchitecture.Jobs/Dockerfile
+
+volumes:
+  postgres_data: {}
+

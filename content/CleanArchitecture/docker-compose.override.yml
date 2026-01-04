@@ -1,0 +1,45 @@
+services:
+  cleanarchitecture:
+    container_name: cleanarchitecture
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=_Aa123456
+      - POSTGRES_DB=CleanArchitecture
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+  cleanarchitecture.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__DefaultConnection=Server=cleanarchitecture;Database=CleanArchitecture;User Id=postgres;Password=_Aa123456;Include Error Detail=true
+    depends_on:
+      cleanarchitecture:
+        condition: service_healthy
+    ports:
+      - "5150:8080"
+      - "7079:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  cleanarchitecture.jobs:
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+    depends_on:
+      cleanarchitecture:
+        condition: service_healthy
+    restart: always
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro

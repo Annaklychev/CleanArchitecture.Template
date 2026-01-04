@@ -18,4 +18,7 @@
   <Folder Name="/src/Web/">
     <Project Path="CleanArchitecture.WASM/CleanArchitecture.WASM.csproj" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

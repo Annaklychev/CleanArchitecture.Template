@@ -1,5 +1,44 @@
+# Build output
 bin/
 obj/
-/packages/
+artifacts/
+
+# IDEs
+.vs/
+.vscode/
+.idea/
+_ReSharper*/
+_ReSharper.Caches/
 riderModule.iml
-/_ReSharper.Caches/
+
+# User-specific files
+*.user
+*.slnLaunch.user
+*.DotSettings.user
+
+# Logs & temp
+*.log
+*.tmp
+*.pdb
+*.ilk
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+/packages/
+
+# Docker
+.dockerignore
+.env
+.env.*
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+/content/CleanArchitecture/TROUBLESHOOTING-FILE-LOCKS.md
