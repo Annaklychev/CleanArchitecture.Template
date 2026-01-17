@@ -1,4 +1,5 @@
 using System.Net.Mail;
+using CleanArchitecture.Domain.Errors;
 
 namespace CleanArchitecture.Domain.User.ValueObjects;
 
@@ -9,10 +10,10 @@ public sealed record Email
     public Email(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException("Email cannot be empty");
+            throw new DomainException(DomainErrorKeys.Validation.Required, new { field = "email" });
 
         if (!value.Contains("@") || !MailAddress.TryCreate(value, out MailAddress? mailAddress))
-            throw new ArgumentException("Invalid email format");
+            throw new DomainException(DomainErrorKeys.User.InvalidEmail, new { email = value });
 
         Value = value.ToLowerInvariant();
     }

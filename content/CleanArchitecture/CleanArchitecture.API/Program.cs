@@ -1,4 +1,5 @@
 using System.Text;
+using CleanArchitecture.API.Middleware;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Interfaces.Auth;
 using CleanArchitecture.Infrastructure;
@@ -21,6 +22,11 @@ try
 // Add services to the container.
 
     builder.Services.AddControllers();
+    
+    // Exception handling
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+    builder.Services.AddProblemDetails();
+    
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
     builder.Services.AddEndpointsApiExplorer();
@@ -62,6 +68,9 @@ try
 
     var app = builder.Build();
 
+    // Global exception handler
+    app.UseExceptionHandler();
+
 // ---------- MIGRATIONS ----------
     using (var scope = app.Services.CreateScope())
     {
@@ -70,6 +79,7 @@ try
 
         DatabaseMigrator.Migrate(connectionString);
     }
+    
 // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -92,7 +102,7 @@ try
 catch (Exception ex)
 {
     logger.Error(ex, "Stopped program because of exception");
-    throw; // Rethrow the exception after logging it
+    throw;
 }
 finally
 {
