@@ -1,4 +1,5 @@
 @page "/Register"
+
 <h3>Register</h3>
 
 <EditForm Model="registerModel" OnValidSubmit="HandleRegister">
@@ -25,6 +26,11 @@
         <p style="color:red">@errorMessage</p>
     }
 </EditForm>
+
+<div style="margin-top: 20px;">
+    <LanguageSwitcher />
+</div>
+
 @code {
     
 }

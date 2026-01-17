@@ -1,27 +1,35 @@
-@page "/Login"
-<h3>Login</h3>
+@page "/login"
+@using CleanArchitecture.WASM.Resources
+@using Toolbelt.Blazor.I18nText
+@inject Toolbelt.Blazor.I18nText.I18nText I18n
 
-<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<h3>@title</h3>
 
-    <div>
-        <label>Email</label>
-        <InputText @bind-Value="loginModel.Email" />
-    </div>
-    <div>
-        <label>Password</label>
-        <InputText @bind-Value="loginModel.Password" type="password" />
-    </div>
+<EditForm>
+    <label>@email</label>
+    <InputText />
 
-    <button type="submit">Login</button>
+    <label>@password</label>
+    <InputText type="password" />
 
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <p style="color:red">@errorMessage</p>
-    }
+    <button>@submit</button>
 </EditForm>
 
+<LanguageSwitcher />
+
 @code {
-    
+    private string title = "";
+    private string email = "";
+    private string password = "";
+    private string submit = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var t = await I18n.GetTextTableAsync<en>(this);
+
+        title = t.auth.login;
+        email = t.auth.email;
+        password = t.auth.password;
+        submit = t.buttons.submit;
+    }
 }
