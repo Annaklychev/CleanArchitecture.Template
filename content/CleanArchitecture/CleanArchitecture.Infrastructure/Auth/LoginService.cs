@@ -1,5 +1,6 @@
 using CleanArchitecture.Application.DTOs;
 using CleanArchitecture.Application.Interfaces.Auth;
+using CleanArchitecture.Domain.Errors;
 using CleanArchitecture.Persistence.Context;
 using CleanArchitecture.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -29,8 +30,11 @@ public class LoginService : ILoginService
     public async Task<AuthResultDto> Login(LoginRequestDto request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
-            throw new UnauthorizedAccessException();
+        if (user == null)
+            throw new DomainException(DomainErrorKeys.User.NotFound);
+
+        if (!await _userManager.CheckPasswordAsync(user, request.Password))
+            throw new DomainException(DomainErrorKeys.Auth.InvalidCredentials);
 
         var access = _jwt.GenerateAccessToken(new (user.Id, user.Email));
         var refresh = _jwt.GenerateRefreshToken(user.Id);
@@ -42,6 +46,6 @@ public class LoginService : ILoginService
             access,
             refresh.Token,
             request.Email,
-            DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:AccessMinutes"])));
+            DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:AccessMinutes"]!)));
     }
 }
