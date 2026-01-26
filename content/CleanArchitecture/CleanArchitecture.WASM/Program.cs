@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using CleanArchitecture.WASM;
 using CleanArchitecture.WASM.Auth;
-using CleanArchitecture.WASM.Localization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using System.Globalization;
+using Toolbelt.Blazor.I18nText;
 
-var culture = new System.Globalization.CultureInfo("en");
-System.Globalization.CultureInfo.DefaultThreadCurrentCulture = culture;
-System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = culture;
-
+// Set default culture to English
+var culture = new CultureInfo("en");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -28,9 +29,12 @@ builder.Services.AddScoped<UnauthorizedHandler>();
 
 builder.Services.AddScoped<ITokenRefreshService, TokenRefreshService>();
 
-// Localization - Toolbelt.Blazor.I18nText v14
-builder.Services.AddI18nText();
-builder.Services.AddScoped<LocalizationService>();
+#pragma warning disable CS0618 // Type or member is obsolete
+builder.Services.AddI18nText(options =>
+{
+    options.PersistanceLevel = PersistanceLevel.Cookie;
+});
+#pragma warning restore CS0618 // Type or member is obsolete
 
 builder.Services
     .AddRefitClient<IAuthApi>()
@@ -44,4 +48,6 @@ builder.Services
     .AddHttpMessageHandler<JwtAuthMessageHandler>()
     .AddHttpMessageHandler<UnauthorizedHandler>();
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+await host.RunAsync();

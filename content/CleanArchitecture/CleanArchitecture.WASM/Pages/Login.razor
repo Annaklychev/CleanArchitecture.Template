@@ -1,35 +1,28 @@
 @page "/login"
-@using CleanArchitecture.WASM.Resources
-@using Toolbelt.Blazor.I18nText
-@inject Toolbelt.Blazor.I18nText.I18nText I18n
 
-<h3>@title</h3>
+<h3>@(_textTable?.PagesLoginTitle ?? "Login")</h3>
 
-<EditForm>
-    <label>@email</label>
-    <InputText />
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-    <label>@password</label>
-    <InputText type="password" />
+    <div>
+        <label>@(_textTable?.PagesLoginEmailLabel ?? "Email")</label>
+        <InputText @bind-Value="loginModel.Email" />
+    </div>
+    <div>
+        <label>@(_textTable?.PagesLoginPasswordLabel ?? "Password")</label>
+        <InputText @bind-Value="loginModel.Password" type="password" />
+    </div>
 
-    <button>@submit</button>
+    <button type="submit">@(_textTable?.PagesLoginSubmitButton ?? "Login")</button>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p style="color:red">@errorMessage</p>
+    }
 </EditForm>
 
-<LanguageSwitcher />
-
 @code {
-    private string title = "";
-    private string email = "";
-    private string password = "";
-    private string submit = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-        var t = await I18n.GetTextTableAsync<en>(this);
-
-        title = t.auth.login;
-        email = t.auth.email;
-        password = t.auth.password;
-        submit = t.buttons.submit;
-    }
+    
 }

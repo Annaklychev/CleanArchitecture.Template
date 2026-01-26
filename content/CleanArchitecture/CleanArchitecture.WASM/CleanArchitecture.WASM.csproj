@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+        <!-- Ensure UTF-8 encoding for all files -->
+        <Utf8Output>true</Utf8Output>
     </PropertyGroup>
 
     <ItemGroup>
