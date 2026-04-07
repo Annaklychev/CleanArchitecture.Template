@@ -1,6 +1,5 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# syntax=docker/dockerfile:1
 
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 USER $APP_UID
 WORKDIR /app
@@ -8,7 +7,6 @@ EXPOSE 8080
 EXPOSE 8081
 
 
-# This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
@@ -18,17 +16,20 @@ COPY ["CleanArchitecture.Domain/CleanArchitecture.Domain.csproj", "CleanArchitec
 COPY ["CleanArchitecture.Infrastructure/CleanArchitecture.Infrastructure.csproj", "CleanArchitecture.Infrastructure/"]
 COPY ["CleanArchitecture.Persistence/CleanArchitecture.Persistence.csproj", "CleanArchitecture.Persistence/"]
 COPY ["CleanArchitecture.Migrations/CleanArchitecture.Migrations.csproj", "CleanArchitecture.Migrations/"]
-RUN dotnet restore "./CleanArchitecture.API/CleanArchitecture.API.csproj"
+RUN --mount=type=cache,id=nuget-api,target=/root/.nuget/packages \
+    dotnet restore "./CleanArchitecture.API/CleanArchitecture.API.csproj"
 COPY . .
 WORKDIR "/src/CleanArchitecture.API"
-RUN dotnet build "./CleanArchitecture.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN --mount=type=cache,id=nuget-api,target=/root/.nuget/packages \
+    dotnet build "./CleanArchitecture.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./CleanArchitecture.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN --mount=type=cache,id=nuget-api,target=/root/.nuget/packages \
+    dotnet publish "./CleanArchitecture.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
