@@ -29,9 +29,9 @@ riderModule.iml
 /packages/
 
 # Docker
-.dockerignore
 .env
 .env.*
+!.env.example
 
 # Node
 node_modules/

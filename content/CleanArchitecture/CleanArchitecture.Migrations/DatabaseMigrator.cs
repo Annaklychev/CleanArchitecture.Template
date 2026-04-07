@@ -7,6 +7,8 @@ public class DatabaseMigrator
 {
     public static void Migrate(string connectionString)
     {
+        EnsureDatabase.For.PostgresqlDatabase(connectionString);
+        
         var upgrader =
             DeployChanges.To
                 .PostgresqlDatabase(connectionString)
