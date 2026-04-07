@@ -1,0 +1,8 @@
+**/.git
+**/.vs
+**/.vscode
+**/.idea
+**/bin
+**/obj
+**/*.user
+.env
