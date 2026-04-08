@@ -8,6 +8,9 @@
 
     <main>
         <div class="top-row px-4">
+            <div class="language-dropdown-wrapper">
+                <LanguageSelector />
+            </div>
             <AuthorizeView>
                 @if (!string.IsNullOrWhiteSpace(UserName))
                 {

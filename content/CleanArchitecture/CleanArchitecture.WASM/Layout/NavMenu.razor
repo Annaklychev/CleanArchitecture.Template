@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject Toolbelt.Blazor.I18nText.I18nText I18nText
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">CleanArchitecture.WASM</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -11,27 +13,27 @@
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> @(_textTable?.NavHome ?? "Home")
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="register">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Register
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @(_textTable?.NavRegister ?? "Register")
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="login">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Login
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @(_textTable?.NavLogin ?? "Login")
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @(_textTable?.NavCounter ?? "Counter")
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="SecretPage">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Secret page
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @(_textTable?.NavSecret ?? "Secret")
             </NavLink>
         </div>
     </nav>
@@ -39,12 +41,17 @@
 
 @code {
     private bool collapseNavMenu = true;
+    private CleanArchitecture.WASM.I18nText.AppText? _textTable;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _textTable = await I18nText.GetTextTableAsync<CleanArchitecture.WASM.I18nText.AppText>(this);
+    }
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
-
 }

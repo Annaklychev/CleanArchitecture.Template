@@ -1,0 +1,33 @@
+{
+  "Hello": "Hola Mundo",
+  "ErrorsAuthInvalidCredentials": "Correo o contraseña no válidos",
+  "ErrorsCommonUnexpectedError": "Ocurrió un error",
+  "ErrorsCommonOperationFailed": "La operación falló",
+  "PagesHomeTitle": "Bienvenido",
+  "PagesHomeSubtitle": "Una plantilla de aplicación moderna y escalable",
+  "PagesLoginTitle": "Iniciar sesión",
+  "PagesLoginEmailLabel": "Correo",
+  "PagesLoginPasswordLabel": "Contraseña",
+  "PagesLoginSubmitButton": "Iniciar sesión",
+  "PagesRegisterTitle": "Registrarse",
+  "PagesRegisterEmailLabel": "Correo",
+  "PagesRegisterPasswordLabel": "Contraseña",
+  "PagesRegisterConfirmPasswordLabel": "Confirmar contraseña",
+  "PagesRegisterSubmitButton": "Registrarse",
+  "PagesCounterTitle": "Contador",
+  "PagesCounterCurrentCount": "Cuenta actual",
+  "PagesCounterIncrementButton": "Haz clic aquí",
+  "PagesSecretTitle": "Página secreta",
+  "PagesSecretMessage": "Esta es una página protegida",
+  "NavHome": "Inicio",
+  "NavLogin": "Iniciar sesión",
+  "NavRegister": "Registrarse",
+  "NavCounter": "Contador",
+  "NavSecret": "Secreto",
+  "LanguageSelectorLabel": "Idioma",
+  "LanguageEnglish": "Inglés",
+  "LanguageRussian": "Ruso",
+  "LanguageSpanish": "Español"
+}
+
+

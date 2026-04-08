@@ -1,20 +1,21 @@
-@page "/Login"
-<h3>Login</h3>
+@page "/login"
+
+<h3>@(_textTable?.PagesLoginTitle ?? "Login")</h3>
 
 <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div>
-        <label>Email</label>
+        <label>@(_textTable?.PagesLoginEmailLabel ?? "Email")</label>
         <InputText @bind-Value="loginModel.Email" />
     </div>
     <div>
-        <label>Password</label>
+        <label>@(_textTable?.PagesLoginPasswordLabel ?? "Password")</label>
         <InputText @bind-Value="loginModel.Password" type="password" />
     </div>
 
-    <button type="submit">Login</button>
+    <button type="submit">@(_textTable?.PagesLoginSubmitButton ?? "Login")</button>
 
     @if (!string.IsNullOrEmpty(errorMessage))
     {

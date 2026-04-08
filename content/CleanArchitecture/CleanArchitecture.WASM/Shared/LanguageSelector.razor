@@ -1,0 +1,67 @@
+@using System.Globalization
+@inject Toolbelt.Blazor.I18nText.I18nText I18nText
+
+<div class="language-selector">
+    <label>@(_textTable?.LanguageSelectorLabel ?? "Language"):</label>
+    <select @onchange="OnLanguageChange" class="language-select">
+        @foreach (var lang in languages)
+        {
+            <option value="@lang.Code" selected="@(lang.Code == currentLanguage)">
+                @lang.Name
+            </option>
+        }
+    </select>
+</div>
+
+@code {
+    private List<(string Code, string Name)> languages = new();
+    private string currentLanguage = "en";
+    private CleanArchitecture.WASM.I18nText.AppText? _textTable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        _textTable = await I18nText.GetTextTableAsync<CleanArchitecture.WASM.I18nText.AppText>(this);
+        UpdateLanguagesList();
+    }
+
+    private void UpdateLanguagesList()
+    {
+        languages = new List<(string Code, string Name)>
+        {
+            ("en", _textTable?.LanguageEnglish ?? "English"),
+            ("ru", _textTable?.LanguageRussian ?? "Russian"),
+            ("es", _textTable?.LanguageSpanish ?? "Spanish")
+        };
+    }
+
+    private async Task OnLanguageChange(ChangeEventArgs e)
+    {
+        var selectedLanguage = e.Value?.ToString() ?? "en";
+        await I18nText.SetCurrentLanguageAsync(selectedLanguage);
+        currentLanguage = selectedLanguage;
+        
+        // Reload text table for new language
+        _textTable = await I18nText.GetTextTableAsync<CleanArchitecture.WASM.I18nText.AppText>(this);
+        UpdateLanguagesList();
+        
+        StateHasChanged();
+    }
+}
+
+<style>
+    .language-selector {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .language-select {
+        padding: 0.25rem 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        cursor: pointer;
+    }
+</style>
+
